@@ -1,9 +1,7 @@
 package routing
 
 import (
-	"fmt"
 	"net/http"
-	"reflect"
 	"regexp"
 )
 
@@ -51,6 +49,7 @@ type Route struct {
 // that can be documented automaically.
 type Middlewarer interface {
 	Middleware() Middleware
+	Name() string
 	Description() string
 }
 
@@ -103,6 +102,8 @@ func (route *Route) ServeHTTP(
 	last.ServeHTTP(w, r)
 }
 
+// AddMiddleware adds a middleware to a route.
+// Middlewares are sorted by their name.
 func (r *Route) AddMiddleware(mw Middlewarer) *Route {
 	r.Middleware = append(r.Middleware, mw)
 	return r
@@ -160,14 +161,4 @@ type HTTPArgument struct {
 
 func NewHTTPArgument(name string, example interface{}) *HTTPArgument {
 	return &HTTPArgument{name, example}
-}
-
-func absoluteTypeName(v interface{}) string {
-	t := reflect.Indirect(reflect.ValueOf(v)).Type()
-	return fmt.Sprintf("%s.%s", t.PkgPath(), t.Name())
-}
-
-func typeName(v interface{}) string {
-	t := reflect.Indirect(reflect.ValueOf(v)).Type()
-	return t.Name()
 }

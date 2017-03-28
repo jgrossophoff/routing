@@ -10,8 +10,6 @@ import (
 	"net/http/httptest"
 	"os"
 	"testing"
-
-	"github.com/jgrossophoff/routing/test/mw"
 )
 
 type TestModel struct {
@@ -180,32 +178,6 @@ func TestMatching(t *testing.T) {
 	}
 }
 
-func TestTypeName(t *testing.T) {
-	n1 := typeName(&TestMiddlewareFirst{})
-	n2 := typeName(&mw.TestMiddlewareFirst{})
-
-	if n1 != n2 {
-		t.Errorf("expected the relative names to be the same, were %q and %q", n1, n2)
-	}
-}
-
-func TestAbsoluteTypeName(t *testing.T) {
-	n1 := absoluteTypeName(&TestMiddlewareFirst{})
-	n2 := absoluteTypeName(&mw.TestMiddlewareFirst{})
-
-	n3 := absoluteTypeName(&TestMiddlewareFirst{})
-	n4 := absoluteTypeName(&testMiddlewareCancel{})
-
-	errFmt := "expected the absolute type names of %q and %q to be different but was the same"
-
-	if n1 == n2 {
-		t.Errorf(errFmt, n1, n2)
-	}
-	if n1 == n2 {
-		t.Errorf(errFmt, n3, n4)
-	}
-}
-
 const testMiddlewareCtxValue = "middleware"
 const overrittenCtxValue = "overwritten"
 
@@ -244,3 +216,7 @@ func (mw *testMiddlewareCancel) Middleware() Middleware {
 func (mw *TestMiddlewareFirst) Description() string  { return "Test Description" }
 func (mw *testMiddlewareSecond) Description() string { return "Test Description" }
 func (mw *testMiddlewareCancel) Description() string { return "Test Description" }
+
+func (mw *TestMiddlewareFirst) Name() string  { return "First Middleware" }
+func (mw *testMiddlewareSecond) Name() string { return "Second middleware" }
+func (mw *testMiddlewareCancel) Name() string { return "Cancel miiddleware" }

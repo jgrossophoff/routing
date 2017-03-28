@@ -31,9 +31,7 @@ func WriteDocs(
 }
 
 var tmpl = template.Must(template.New("").Funcs(template.FuncMap{
-	"AbsoluteTypeName": absoluteTypeName,
-	"TypeName":         typeName,
-	"EscapeHTML":       html.EscapeString,
+	"EscapeHTML": html.EscapeString,
 	"MarshalJSON": func(v interface{}) (string, error) {
 		b, err := json.Marshal(v)
 		if err != nil {
@@ -118,20 +116,6 @@ var tmpl = template.Must(template.New("").Funcs(template.FuncMap{
 			{{end}}
 		</nav>
 
-		{{$middlewares := .Router.Middlewares}}
-		{{if $middlewares}}
-				<h4>Middlewares</h4>
-				<nav>
-					{{range $name, $mw := $middlewares}}
-						<div>
-							<a href="#middleware-{{EscapeHTML $name}}">
-								{{TypeName $mw}}
-							</a>
-						</div>
-					{{end}}
-				</nav>
-		{{end}}
-
 		<hr>
 
 		<main>
@@ -177,9 +161,8 @@ var tmpl = template.Must(template.New("").Funcs(template.FuncMap{
 								<ol>
 									{{range .Middleware}}
 										<li>
-											<a href="#middleware-{{EscapeHTML (AbsoluteTypeName .)}}">
-												{{TypeName .}}
-											</a>
+											<strong>{{.Name}}</strong><br/>
+											{{.Description}}
 										</li>
 									{{end}}
 								</ol>
@@ -191,21 +174,6 @@ var tmpl = template.Must(template.New("").Funcs(template.FuncMap{
 
 			<hr>
 
-			{{$middlewares := .Router.Middlewares}}
-			{{if $middlewares}}
-				<h3>Middlewares</h3>
-				{{range $name, $mw := $middlewares}}
-					<div id="middleware-{{EscapeHTML $name}}" class="middleware">
-						<h4>{{$name}}</h4>
-						<p class="description">
-							{{$mw.Description}}
-						</p>
-					</div>
-				{{end}}
-
-				<hr>
-
-			{{end}}
 			Generated {{Now}}
 		</main>
 	</div>

@@ -66,22 +66,6 @@ func uniquePath(method, path string) string {
 	return method + path
 }
 
-// Middlewares returns all middlewares for all routes.
-func (r *Router) Middlewares() map[string]Middlewarer {
-	mw := make(map[string]Middlewarer)
-	for _, r := range r.rexRoutes {
-		for _, m := range r.Middleware {
-			mw[absoluteTypeName(m)] = m
-		}
-	}
-	for _, r := range r.equalityRoutes {
-		for _, m := range r.Middleware {
-			mw[absoluteTypeName(m)] = m
-		}
-	}
-	return mw
-}
-
 func (r *Router) Tags() []string {
 	tags := make([]string, 0, len(r.routesByTag))
 	for k := range r.routesByTag {
@@ -91,7 +75,20 @@ func (r *Router) Tags() []string {
 	return tags
 }
 
+type routesByPath []*Route
+
+func (sl routesByPath) Len() int           { return len(sl) }
+func (sl routesByPath) Swap(i, j int)      { sl[i], sl[j] = sl[j], sl[i] }
+func (sl routesByPath) Less(i, j int) bool { return sl[i].Rex.String() < sl[j].Rex.String() }
+
+// RoutesFor Tag returns all routes for t sorted by path.
+//
+// It returns an empty slice even if there are no routes for t.
 func (r *Router) RoutesForTag(t string) []*Route {
+	if r.routesByTag[t] == nil {
+		return []*Route{}
+	}
+	sort.Sort(routesByPath(r.routesByTag[t]))
 	return r.routesByTag[t]
 }
 
