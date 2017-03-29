@@ -48,6 +48,8 @@ func (router *Router) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // HTTP method and URL path.
 //
 // Returns nil if none found.
+//
+// If two regex pattern match, the one added sooner takes precedence.
 func (r *Router) Match(method, path string) *Route {
 	if route, exists := r.equalityRoutes[uniquePath(method, path)]; exists {
 		return route
