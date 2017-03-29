@@ -109,7 +109,7 @@ var tmpl = template.Must(template.New("").Funcs(template.FuncMap{
 				{{range $.Router.RoutesForTag $tag}}
 					<div>
 						<a href="#route-{{EscapeHTML .Rex.String}}">
-							{{.Rex.String}}
+						{{.Method}} {{.Rex.String}}
 						</a>
 					</div>
 				{{end}}
