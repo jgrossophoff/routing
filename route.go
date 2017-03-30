@@ -46,7 +46,7 @@ type Route struct {
 }
 
 // Middlewarer represents the interface for middlewares
-// that can be documented automaically.
+// that can be documented automatically.
 type Middlewarer interface {
 	Middleware() Middleware
 	Name() string
